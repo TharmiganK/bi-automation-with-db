@@ -1,0 +1,9 @@
+[package]
+org = "tharmigan"
+name = "order_processing_automation"
+version = "0.1.0"
+distribution = "2201.13.1"
+title = "Order Processing Automation"
+
+[build-options]
+sticky = true
