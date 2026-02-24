@@ -75,12 +75,28 @@ orders-db   MySQL   localhost:3306   db=orders_db   user=orders_user   pass=orde
 6. In the **Select Tables** form, select `orders` and click `Continue to Connection Details`.
 7. In the **Create Connection** form, set the **Connection Name** to `ordersDB` and click `Save Connection`.
 
+https://github.com/user-attachments/assets/c7b3b3fb-55ca-43ab-8843-028f84d7bcdc
+
+8. Click on the created `ordersDB` connection and click on `View ER Diagram` to view the ER diagram.
+
+https://github.com/user-attachments/assets/79f9aef3-24bb-4837-9f70-11638be58f6d
+
+### Troubleshooting database connection errors
+
+| Error Short Description | Actual Error | Suggested Resolution |
+|---------------|-------------|--------------------|
+| Connection Failed | Error introspecting database tables: failed to connect to the database: Communications link failure. The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server. | The hostname or port may be incorrect, or the database server may be down. Verify the connection details and ensure the database server is running. |
+| Access Denied | Error introspecting database tables: failed to connect to the database: Access denied for user 'user'@'localhost' (using password: YES) | The username or password may be incorrect. Double-check the credentials and ensure the user has the necessary permissions to access the database. |
+| Unknown Database | Error introspecting database tables: failed to connect to the database: Unknown database 'demo1' | The specified database does not exist. Verify the database name and ensure it has been created on the server. |
+
 ---
 
 ## Step 2 — Build the automation
 
 1. Click `+ Add Artifact` and select `Automation` from **Automation**.
 2. Click `Create`.
+
+https://github.com/user-attachments/assets/d8c6861c-0017-4f75-ae19-75051b1c8fcc
 
 ### 2.1 — Get PLACED orders
 
@@ -95,6 +111,8 @@ Set the **Result** name to `placedOrders`.
 From the `Target Type` select the following fields:
 - `orderId`
 - `status`
+
+https://github.com/user-attachments/assets/a0f9f6a8-0731-4b7a-9cf8-c600c836cd34
 
 ### 2.2 — Handle: no orders to process
 
@@ -112,12 +130,16 @@ No new orders to process.
 
 Add a `Return` control node to exit early.
 
+https://github.com/user-attachments/assets/23e76a60-92c9-4071-bbf8-3747002a824e
+
 ### 2.3 — Loop and update each order
 
 Add a `Foreach` control node
 - Set its **Collection** to `placedOrders`
 - Set the **Result** name to `placedOrder`
 - Set the **Type** to `PlacedOrdersType`
+
+https://github.com/user-attachments/assets/6fd8a027-87c5-4d39-8d08-e5a558a967a0
 
 Inside the Foreach block:
 
@@ -126,30 +148,40 @@ Inside the Foreach block:
 2. Add a `Log Info` statement node with the message:
 
    ```
-   "Order advanced to PROCESSING"
+   Order advanced to PROCESSING
    ```
 
    Under **Advanced Configurations** set the following **Additional Values**:
    - **Key** to `orderId`
    - **Value** to `updatedOrder.orderId`
 
+https://github.com/user-attachments/assets/0005802b-513c-4bcf-8cb9-3e473bc13b11
+
 ### 2.4 — Log the summary
 
 After the Foreach block, add a `Log Info` statement node with the message:
 
 ```
-"Done — processing orders"
+Done — processing orders
 ```
 
 Under **Advanced Configurations** set the following **Additional Values**:
 - **Key** to `count`
 - **Value** to `placedOrders.length()`
 
+https://github.com/user-attachments/assets/b245611a-2fbd-49ff-8499-ec74cfc50174
+
 ---
 
 ## Running the automation
 
-Run the Ballerina program. On first run (with `ORD-001` and `ORD-002` in `PLACED` status) you should see:
+Click on the run button to run the automation.
+It will ask for you to create the necessary configuration to connect to the database.
+Click on `Create Config.toml` and add the databse password to the associated configuration.
+
+https://github.com/user-attachments/assets/50201ce0-16bb-424f-9c96-6842be90a13f
+
+Run the BI project. On first run (with `ORD-001` and `ORD-002` in `PLACED` status) you should see:
 
 ```
 Order ORD-001 advanced to PROCESSING
