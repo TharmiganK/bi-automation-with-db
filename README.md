@@ -28,7 +28,13 @@ This walkthrough shows how WSO2 BI's **persist database connections** make it st
 
 | Table | Columns |
 |---|---|
-| `orders` | `order_id` (PK), `customer_id`, `item`, `amount`, `status`, `placed_at` |
+| `customers` | `customer_id` (PK), `name`, `email`, `address` |
+| `products` | `product_id` (PK), `product_name`, `category`, `price` |
+| `orders` | `order_id` (PK), `customer_id` (FK), `product_id` (FK), `amount`, `status`, `placed_at` |
+
+**Relationships:**
+- `orders.customer_id` → `customers.customer_id` (many orders per customer)
+- `orders.product_id` → `products.product_id` (many orders per product)
 
 Status lifecycle: `PLACED` → `PROCESSING` → `SHIPPED` → `DELIVERED`
 
@@ -72,7 +78,7 @@ orders-db   MySQL   localhost:3306   db=orders_db   user=orders_user   pass=orde
    | Password | `orders_pass` |
 
 5. Click `Connect & Introspect Database`.
-6. In the **Select Tables** form, select `orders` and click `Continue to Connection Details`.
+6. In the **Select Tables** form, select all tables and click `Continue to Connection Details`.
 7. In the **Create Connection** form, set the **Connection Name** to `ordersDB` and click `Save Connection`.
 
 https://github.com/user-attachments/assets/c7b3b3fb-55ca-43ab-8843-028f84d7bcdc
@@ -205,12 +211,32 @@ No new orders to process.
 
 ## Seed data reference
 
-| order_id | customer_id | item | amount | status |
+**Customers:**
+
+| customer_id | name | email | address |
+|---|---|---|---|
+| CUST-001 | John Smith | john.smith@example.com | 123 Main St, San Francisco, CA |
+| CUST-002 | Sarah Johnson | sarah.johnson@example.com | 456 Oak Ave, New York, NY |
+| CUST-003 | Michael Brown | michael.brown@example.com | 789 Pine Rd, Austin, TX |
+| CUST-004 | Emma Davis | emma.davis@example.com | 321 Elm St, Seattle, WA |
+
+**Products:**
+
+| product_id | product_name | category | price |
+|---|---|---|---|
+| PROD-001 | Wireless Headphones | Electronics | 79.99 |
+| PROD-002 | USB-C Hub | Electronics | 34.50 |
+| PROD-003 | Mechanical Keyboard | Electronics | 129.00 |
+| PROD-004 | Monitor Stand | Accessories | 49.99 |
+
+**Orders:**
+
+| order_id | customer_id | product_id | amount | status |
 |---|---|---|---|---|
-| ORD-001 | CUST-001 | Wireless Headphones | 79.99 | `PLACED` |
-| ORD-002 | CUST-002 | USB-C Hub | 34.50 | `PLACED` |
-| ORD-003 | CUST-003 | Mechanical Keyboard | 129.00 | `PROCESSING` |
-| ORD-004 | CUST-004 | Monitor Stand | 49.99 | `PROCESSING` |
+| ORD-001 | CUST-001 | PROD-001 | 79.99 | `PLACED` |
+| ORD-002 | CUST-002 | PROD-002 | 34.50 | `PLACED` |
+| ORD-003 | CUST-003 | PROD-003 | 129.00 | `PROCESSING` |
+| ORD-004 | CUST-004 | PROD-004 | 49.99 | `PROCESSING` |
 
 `ORD-001` and `ORD-002` are the actionable records (happy path). `ORD-003` and `ORD-004` are already processing — the `WHERE status = 'PLACED'` filter ensures they are never re-processed.
 
