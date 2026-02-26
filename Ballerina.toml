@@ -20,15 +20,9 @@ options.withInitParams = true
 [[dependency]]
 org = "ballerina"
 name = "tool.persist"
-version = "1.9.0"
-
-[[dependency]]
-org = "ballerinax"
-name = "persist.sql"
-version = "1.7.2"
+version = "1.9.1"
 
 [[platform.java21.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "persist.sql-native"
 version = "1.7.2"
-
