@@ -16,3 +16,4 @@ trace_enabled.bal
 
 # OS generated files.
 .DS_Store
+config.toml
